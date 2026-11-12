@@ -1,0 +1,36 @@
+# WSL2 专用配置示例
+# 目标平台：Windows 11 WSL2 中的 Ubuntu 22.04（24.04 亦可），`wsl -l -v` 的 VERSION 必须为 2。
+# ------------------------------------------------------------------------------
+# 用法（在 WSL2 的 Ubuntu 里执行）：
+#   cp config/sdk.wsl.conf.example config/sdk.local.conf
+#   ./rk3528-sdk.sh config          # 核对生效路径
+#
+# ⚠️ 最重要的一条：源码工作区必须放在 WSL2 原生 ext4 文件系统（/home/...）里，
+#    绝对不能放 /mnt/c、/mnt/d、/mnt/e 等 drvfs 挂载点。原因：
+#      - drvfs 权限全是 777，不保留 Linux uid/gid、setuid、设备节点
+#        （build-rootfs-img.sh 生成 ext4 rootfs.img 时会出错或产出坏镜像）
+#      - 跨文件系统 9P 协议导致海量小文件编译慢数倍
+#      - 大小写语义与 Linux 内核源码树要求不一致
+#    如果 WSL2 发行版本身装在 F 盘（wsl --install --location F:\...），
+#    那么 /home/... 就自动落在 F 盘的 ext4.vhdx 里，无需额外挂载。
+# ------------------------------------------------------------------------------
+
+# 统一放到 WSL2 家目录下的工作目录
+RK_WORKSPACE="$HOME/rk3528-work/workspace"
+RK_DOWNLOAD_DIR="$HOME/rk3528-work/downloads"
+RK_OUTPUT_DIR="$HOME/rk3528-work/out"
+RK_LOG_DIR="$HOME/rk3528-work/logs"
+
+# 视物理内存调整；WSL2 默认可用一半宿主机内存，FriendlyWrt 全量编译建议 >= 12GB
+# 对应 Windows 侧 %USERPROFILE%\.wslconfig 中的 [wsl2] memory / processors
+RK_JOBS=8
+RK_MIN_FREE_GB=50
+
+# WSL2 原生 ext4 支持大小写敏感，无需额外配置；不要用 RK_ALLOW_NON_LINUX。
+# 如需把产物取回 Windows：
+#   cp -r ~/rk3528-work/out /mnt/e/Projects/rk3528-sdk/out/
+# 或在资源管理器访问 \\wsl$\Ubuntu-22.04\home\<user>\rk3528-work\out
+
+# 国内网络加速（按需启用）
+# RK_GITHUB_MIRROR=https://ghproxy.net/https://github.com
+# RK_RAW_MIRROR=https://ghproxy.net/

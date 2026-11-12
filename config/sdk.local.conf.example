@@ -1,0 +1,27 @@
+# 本机配置示例：复制为 config/sdk.local.conf 后按需修改。
+# 加载顺序：config/sdk.conf -> config/sdk.local.conf -> $RK_CONF -> 环境变量
+
+# 源码/镜像体积很大，建议指向空间充足的磁盘（全量编译建议 >= 60GB 空闲）
+# RK_WORKSPACE=/mnt/data/rk3528/workspace
+# RK_DOWNLOAD_DIR=/mnt/data/rk3528/downloads
+# RK_OUTPUT_DIR=/mnt/data/rk3528/out
+
+# 目标系统目录名（必须与 sd-fuse 内定义严格一致）
+# RK_DEFAULT_OS=debian-trixie-core-arm64
+
+# 并行编译线程数，0 = 自动 nproc
+# RK_JOBS=8
+
+# 国内网络加速（按需启用其一）
+# RK_GITHUB_MIRROR=https://ghproxy.net/https://github.com
+# RK_RAW_MIRROR=https://ghproxy.net/
+# RK_TOOLCHAIN_URL=https://example.com/toolchain-11.3-aarch64.tar.xz
+
+# 自定义工具链位置（若不用官方 /opt/FriendlyARM/toolchain 布局）
+# RK_TOOLCHAIN_ROOT=/opt/FriendlyARM/toolchain
+# RK_TOOLCHAIN_VERSION=11.3-aarch64
+# RK_TOOLCHAIN_BIN=/opt/FriendlyARM/toolchain/11.3-aarch64/bin
+# RK_CROSS_COMPILE=aarch64-linux-gnu-
+
+# 空间检查阈值（GB）
+# RK_MIN_FREE_GB=50

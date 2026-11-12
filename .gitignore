@@ -1,0 +1,28 @@
+# 源码工作区 / 下载缓存 / 产物 / 日志：
+# 用 `目录/*` + `!目录/README.md` 让目录本身（占位文档）可以入库，
+# 但目录里的源码、镜像、固件、日志等大文件一律不入库。
+workspace/*
+!workspace/README.md
+downloads/*
+!downloads/README.md
+out/*
+!out/README.md
+logs/*
+!logs/README.md
+*.log
+
+# 本机私有配置（可能含自定义路径或令牌）
+config/sdk.local.conf
+
+# 编译产物 / 编辑器
+*.img
+*.img.gz
+*.tgz
+*.tar.xz
+*.o
+__pycache__/
+.DS_Store
+.idea/
+.vscode/
+.DS_Store
+.workbuddy-ai
