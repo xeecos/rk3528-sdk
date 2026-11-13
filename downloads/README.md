@@ -15,6 +15,8 @@ Git 不追踪空目录，本文件用于让目录结构随仓库一起提交。�
 | `tools/resource_tool` | 打包 `resource.img` |
 | `tools/logo.bmp`、`tools/logo_kernel.bmp` | 开机 logo |
 | `tools/upgrade_tool` | 可选放置的 Rockchip 线刷工具 |
+| `w132d-release/<tag>/` | `w132d flash` 下载的 `SHA256SUMS` 与 `w132d-flash.zip` |
+| `w132d-flash/<tag>/` | 解压后的 W132D USB 刷写包（`flash.sh`、`flash.py`、loader 与分段镜像） |
 
 `download()` 对已存在且非空的文件会跳过下载，因此中断后重跑不会重复拉大文件。
 可通过 `RK_DOWNLOAD_DIR` 改到大容量磁盘；用 `--images FILE` / `--package FILE` 可直接使用网盘本地文件。

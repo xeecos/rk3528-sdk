@@ -33,4 +33,8 @@ RK_WORKSPACE=/mnt/data/rk3528 ./rk3528-sdk.sh fw-build all
 `RK_DEFAULT_OS`、`RK_TOOLCHAIN_BIN`、`RK_MIN_FREE_GB`、
 `RK_GITHUB_MIRROR` / `RK_RAW_MIRROR`（国内加速）。
 
+路线 D（W132D 主线 Linux）的配置集中在 `sdk.conf` 末尾的 `RK_W132D_*` 段：上游仓库、
+分支、Release 地址、Python 版本要求与最小磁盘空间；详见
+[docs/10-W132D主线Linux.md](../docs/10-W132D主线Linux.md)。
+
 完整清单见 [docs/06-命令参考.md](../docs/06-命令参考.md)。

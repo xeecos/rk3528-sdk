@@ -12,15 +12,18 @@
 
 ---
 
-## 1. 三条构建路线
+## 1. 四条构建路线
 
 | 路线 | 适用场景 | 入口命令 | 产出 |
 |---|---|---|---|
 | **A. FriendlyWrt 25.12 全量工程** | 要从零编译整套 OpenWrt/FriendlyWrt 系统 | `fw-init` → `fw-build all` | SD 镜像 + eMMC 卡刷镜像 |
 | **B. 手工编译内核 / U-Boot** | 只想改内核配置、改 DTB、单独验证驱动 | `kernel-build` / `uboot-build` | `kernel.img`、`resource.img`、模块包、`uboot.img` 等 |
 | **C. sd-fuse 脚本化编译与打包** | 基于官方分区镜像定制 Debian/Ubuntu 等系统 | `sdfuse-init` → `sdfuse-build` → `sdfuse-image` | SD 启动镜像 / SD-to-eMMC 卡刷镜像 |
+| **D. ZTE W132D 主线 Linux** | 同 SoC 的另一台设备：主线内核 + Armbian | `w132d init` → `w132d fetch` → `w132d build` / `w132d flash` | `w132d.img`、Armbian deb 包、USB 刷写包 |
 
-三条路线互不冲突，共用 `workspace/` 下的源码，可按需组合。
+A/B/C 互不冲突，共用 `workspace/` 下的 FriendlyELEC 源码。
+**路线 D 是独立上游、独立固件体系**（主线内核 + U-Boot + Armbian GPT），与 A/B/C
+**不共用内核、U-Boot、分区镜像，产物不可混刷**，详见 [docs/10-W132D主线Linux.md](docs/10-W132D主线Linux.md)。
 
 ---
 
@@ -51,6 +54,9 @@ sd-fuse 另支持 `debian-bullseye-desktop-arm64`、`debian-bullseye-minimal-arm
 | **Windows 11 + WSL2 中的 Ubuntu** | 22.04（24.04 亦可） | 支持，见 [docs/09-WSL2构建指南.md](docs/09-WSL2构建指南.md) |
 
 两个平台跑的是**同一套 x86_64 Linux 用户态**，官方全部预编译 ELF（工具链、`rkbin/tools/`、`sd-fuse tools/`）通用，无需任何架构分支。
+
+> 路线 D（W132D 主线 Linux）额外要求 Docker，因为上游 Armbian 构建框架运行在容器中。
+> 这是**构建工具依赖**，不是新增受支持平台；主机支持矩阵不变，详见 [docs/10-W132D主线Linux.md](docs/10-W132D主线Linux.md)。
 
 **明确不作为支持目标**：WSL1（`check-host` 会直接拒绝）、macOS 原生、Apple Silicon / arm64 Linux 主机、Docker 作为独立平台、其它 Linux 发行版、Ubuntu 18.04（缺 `lz4`，脚本拦截）。这些环境**不测试、不修兼容性问题**。脚本里保留的架构检测、镜像变量、预演开关属于零维护成本的通用实现，不代表承诺支持。
 
@@ -119,7 +125,23 @@ OS=ubuntu-noble-core-arm64
 
 若镜像包已在网盘下载到本地：`./rk3528-sdk.sh sdfuse-init "$OS" --images /path/to/ubuntu-noble-core-arm64-images.tgz`。
 
-### 4.5 烧录 / 更新
+### 4.5 路线 D：W132D 主线 Linux
+
+```bash
+./rk3528-sdk.sh w132d init                  # clone 上游（需 Docker / Python 3.12+ / 35 GiB）
+./rk3528-sdk.sh w132d fetch --download      # 锁定 Linux v7.2.x + Armbian + U-Boot
+./rk3528-sdk.sh w132d build image           # 产出 w132d.img
+./rk3528-sdk.sh w132d status
+
+# 或跳过本地构建，直接刷官方 Release（不需要 Docker）
+./rk3528-sdk.sh w132d flash                 # 下载 + SHA256 校验 + 只读自检
+./rk3528-sdk.sh w132d flash --execute       # 高危：USB 整盘刷写
+```
+
+> W132D 用 `rkdeveloptool` 走 USB 整盘刷写，**不能**用路线 A/B/C 的 `dd` / `upgrade_tool` / `fusing.sh`。
+> WSL2 的 USB 直通与上游 Windows 路径均未获实机验证，刷写建议用原生 Ubuntu 物理机。
+
+### 4.6 烧录 / 更新
 
 ```bash
 # 在【开发板】上：更新 eMMC 分区（默认预演，确认后加 --execute）
@@ -158,6 +180,7 @@ rk3528-sdk/
 │   ├── sdfuse-image.sh        # 生成 SD / eMMC 镜像、烧写 SD 卡
 │   ├── install-to-board.sh    # 目标板 dd 更新分区
 │   ├── flash-loader.sh        # upgrade_tool 线刷
+│   ├── w132d.sh               # 路线 D：W132D 主线 Linux 编排
 │   └── clean.sh               # 清理产物与日志
 ├── docs/                      # 中文文档（见下方索引）
 ├── workspace/                 # 源码（内容 gitignore）
@@ -209,6 +232,7 @@ RK_JOBS=8 RK_WORKSPACE=/mnt/data/rk3528 ./rk3528-sdk.sh fw-build all
 | `sdfuse-image sd\|emmc\|fuse [OS]` | 生成 / 烧写固件 |
 | `install-board --device DEV --execute` | 目标板 dd 更新分区 |
 | `flash-loader --img-dir DIR --execute` | 线刷 |
+| `w132d init\|fetch\|build\|verify\|flash\|status` | 路线 D：W132D 主线 Linux（详见 `w132d help`） |
 | `clean [images\|logs\|all]` | 清理产物 |
 
 完整参数见 [docs/06-命令参考.md](docs/06-命令参考.md)。
@@ -238,6 +262,7 @@ RK_JOBS=8 RK_WORKSPACE=/mnt/data/rk3528 ./rk3528-sdk.sh fw-build all
 | [docs/07-故障排查.md](docs/07-故障排查.md) | 常见错误与处理 |
 | [docs/08-Wiki流程对照.md](docs/08-Wiki流程对照.md) | 官方 Wiki 每条命令 → 本工具命令逐条对应 |
 | [docs/09-WSL2构建指南.md](docs/09-WSL2构建指南.md) | Windows / WSL2 完整落地步骤（含磁盘规划与烧录注意事项） |
+| [docs/10-W132D主线Linux.md](docs/10-W132D主线Linux.md) | 路线 D：ZTE W132D 主线内核 + Armbian，与 BSP 的边界、构建与 USB 刷写 |
 
 ---
 

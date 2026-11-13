@@ -14,5 +14,6 @@ Git 不追踪空目录，本文件用于让目录结构随仓库一起提交；�
 | `uboot-rockchip/` | `uboot-build` / `sdfuse-build` | U-Boot 源码 `nanopi5-v2017.09` |
 | `rkbin/` | `uboot-build` | 必须与 `uboot-rockchip/` 同级 |
 | `prebuilts/` | `install-toolchain` | 工具链压缩包缓存 |
+| `w132d-linux-mainline/` | `w132d init` | 路线 D 上游：主线 Linux + Armbian，**与上面 FriendlyELEC BSP 完全独立** |
 
 > 源码体积可达数十 GB。空间不足时把 `RK_WORKSPACE` 配置到大容量磁盘（见 `config/sdk.local.conf.example`），不必放在本仓库内。

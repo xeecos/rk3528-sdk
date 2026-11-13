@@ -79,6 +79,14 @@ ${C_BOLD}方案 C：sd-fuse 脚本化编译与打包${C_OFF}
   sdfuse-image fuse [OS] --device /dev/sdX
                                  直接烧写 SD 卡（高危，需二次确认）
 
+${C_BOLD}方案 D：ZTE W132D 主线 Linux（独立上游，与 BSP 不共用源码）${C_OFF}
+  w132d init                    克隆上游 w132d-linux-mainline 并检查构建环境
+  w132d fetch [--latest]        锁定/下载主线 Linux + Armbian + U-Boot，生成 manifest
+  w132d build kernel|image|uboot|bsp|flash-tools|fnos
+  w132d verify static|tests|patches|debs|image
+  w132d flash [--execute]       下载 Release 刷写包、校验、预演；--execute 才真刷
+  w132d status                  查看上游、manifest、产物与刷写包
+
 ${C_BOLD}烧录与更新${C_OFF}
   install-board                 在目标板上用 dd 更新 resource/kernel/uboot 分区（高危）
   flash-loader                  主机上用 upgrade_tool 线刷（需开发板进入 loader 模式）
@@ -133,7 +141,7 @@ case "$cmd" in
         esac
         print_config
         echo
-        local_dirs=("$RK_FW_DIR" "$RK_SDFUSE_DIR" "$RK_KERNEL_SRC" "$RK_UBOOT_SRC" "$RK_RKBIN_SRC" "$RK_TOOLCHAIN_BIN")
+        local_dirs=("$RK_FW_DIR" "$RK_SDFUSE_DIR" "$RK_KERNEL_SRC" "$RK_UBOOT_SRC" "$RK_RKBIN_SRC" "$RK_W132D_DIR" "$RK_TOOLCHAIN_BIN")
         for d in "${local_dirs[@]}"; do
             if [[ -d "$d" ]]; then
                 printf '  %s[存在]%s %-60s %s\n' "$C_GREEN" "$C_OFF" "$d" "$(human_size "$d")"
@@ -166,6 +174,7 @@ declare -A _SCRIPTS=(
     [sdfuse-image]=sdfuse-image.sh
     [install-board]=install-to-board.sh
     [flash-loader]=flash-loader.sh
+    [w132d]=w132d.sh
 )
 
 if [[ -z "${_SCRIPTS[$cmd]:-}" ]]; then

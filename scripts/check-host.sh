@@ -81,7 +81,7 @@ fi
 # ------------------------------------------------------------------------------
 BASE_PKGS=(git curl wget ca-certificates make gcc g++ build-essential file \
     tar xz-utils gzip bzip2 unzip zip p7zip-full rsync sudo kmod binutils \
-    cpio squashfs-tools dosfstools e2fsprogs exfatprogs parted lz4 u-boot-tools \
+    cpio squashfs-tools dosfstools e2fsprogs exfatprogs gdisk parted lz4 u-boot-tools \
     device-tree-compiler libncurses-dev libssl-dev libelf-dev zlib1g-dev \
     flex bison gawk gettext patch python3 python3-setuptools \
     libglib2.0-dev subversion texinfo xmlto libtool autoconf automake \

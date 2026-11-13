@@ -14,6 +14,7 @@
 | [07-故障排查.md](07-故障排查.md) | 常见错误与处理、提交问题时应收集的信息 |
 | [08-Wiki流程对照.md](08-Wiki流程对照.md) | 官方 Wiki 每条命令 → 本工具命令逐条对应 |
 | [09-WSL2构建指南.md](09-WSL2构建指南.md) | Windows / WSL2 安装、磁盘规划、ext4 路径、loop 设备、烧录回 Windows 侧 |
+| [10-W132D主线Linux.md](10-W132D主线Linux.md) | 路线 D：ZTE W132D 主线内核 + Armbian，与 BSP 的边界、构建、USB 刷写、硬件限制 |
 
 总览与版本矩阵见仓库根目录的 [README.md](../README.md)。
 

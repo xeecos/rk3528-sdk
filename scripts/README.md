@@ -33,6 +33,7 @@ bash scripts/fw-build.sh all
 | `sdfuse-image.sh` | `sdfuse-image` | 生成 SD / eMMC 固件，或烧写 SD 卡 |
 | `install-to-board.sh` | `install-board` | 在目标板上 dd 更新 GPT 分区 |
 | `flash-loader.sh` | `flash-loader` | 主机线刷（upgrade_tool v2+） |
+| `w132d.sh` | `w132d <动作>` | 路线 D：W132D 主线 Linux 编排（init/fetch/build/verify/flash/status），与 BSP 完全隔离 |
 | `clean.sh` | `clean [images\|logs\|all]` | 清理本工具产物与日志 |
 
 入口脚本中的命令名与文件名不完全一致（例如 `install-board` → `install-to-board.sh`），映射表在 `rk3528-sdk.sh` 的 `_SCRIPTS` 数组中。
